@@ -10,16 +10,6 @@ class UserListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.textScalerOf(context).scale(14);
-    final scrollController = ScrollController();
-
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        context
-            .read<UserBloc>()
-            .add(FetchUsers(page: context.read<UserBloc>().currentPage + 1));
-      }
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -33,59 +23,48 @@ class UserListPage extends StatelessWidget {
             );
           } else if (state is UserLoaded) {
             return ListView.builder(
-              itemCount: state.users.length + 1,
-              controller: scrollController,
+              itemCount: state.users.length,
               itemBuilder: (context, index) {
-                if (index < state.users.length) {
-                  return ListTile(
-                    title: Row(
-                      children: [
-                        Text(
-                          state.users[index].name,
-                          style: TextStyle(fontSize: textScaleFactor),
-                        ),
-                        const SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            state.users[index].username,
-                            style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: textScaleFactor),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Text(
-                      "works at ${state.users[index].company.name}",
-                      style: TextStyle(
-                          color: Colors.blueGrey, fontSize: textScaleFactor),
-                    ),
-                    leading: const SizedBox(
-                      width: 50,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage:
-                            NetworkImage("https://source.unsplash.com/random"),
+                return ListTile(
+                  title: Row(
+                    children: [
+                      Text(
+                        state.users[index].name,
+                        style: TextStyle(fontSize: textScaleFactor),
                       ),
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          state.users[index].username,
+                          style: TextStyle(
+                              color: Colors.blueGrey,
+                              fontSize: textScaleFactor),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  subtitle: Text(
+                    "works at ${state.users[index].company.name}",
+                    style: TextStyle(
+                        color: Colors.blueGrey, fontSize: textScaleFactor),
+                  ),
+                  leading: const SizedBox(
+                    width: 50,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.transparent,
+                      backgroundImage:
+                          NetworkImage("https://source.unsplash.com/random"),
                     ),
-                    trailing: const Icon(Icons.arrow_right_sharp),
-                    onTap: () {
-                      context
-                          .read<UserBloc>()
-                          .add(GoToUserTasks(state.users[index].id));
-                    },
-                  );
-                } else {
-                  // Loading indicator at the end of the list
-                  return const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
+                  ),
+                  trailing: const Icon(Icons.arrow_right_sharp),
+                  onTap: () {
+                    context
+                        .read<UserBloc>()
+                        .add(GoToUserTasks(state.users[index].id));
+                  },
+                );
               },
             );
           } else if (state is UserError) {
@@ -100,7 +79,7 @@ class UserListPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<UserBloc>().add(FetchUsers(page: 1));
+                      context.read<UserBloc>().add(FetchUsers());
                     },
                     child: const Text('Retry'),
                   ),

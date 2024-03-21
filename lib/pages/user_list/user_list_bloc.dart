@@ -10,16 +10,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final UserService _userService = locator<UserService>();
   final NavigationService _navigationService = locator<NavigationService>();
 
-  int _currentPage = 1;
-
-  int get currentPage => _currentPage;
-
   UserBloc() : super(UserLoading()) {
     on<FetchUsers>((event, emit) async {
       emit(UserLoading());
       try {
-        final userList = await _userService.getUsers(page: event.page);
-        _currentPage = event.page;
+        final userList = await _userService.getUsers();
         emit(UserLoaded(userList));
       } catch (e) {
         emit(UserError('Failed to fetch users: $e'));
@@ -29,6 +24,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<GoToUserTasks>((event, emit) async => await _navigationService
         .navigateTo(TaskListPage.routeName, arguments: event.userId));
 
-    add(FetchUsers(page: currentPage));
+    add(FetchUsers());
   }
 }

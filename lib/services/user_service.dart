@@ -6,9 +6,8 @@ import 'package:eshyft_assessment/services/networking_service.dart';
 class UserService {
   final NetworkingService _networkingService = locator<NetworkingService>();
 
-  Future<List<User>> getUsers({int page = 1, int pageSize = 10}) async {
-    final response =
-        await _networkingService.get('users?page=$page&limit=$pageSize');
+  Future<List<User>> getUsers() async {
+    final response = await _networkingService.get('users');
     final List<dynamic> jsonData = response as List<dynamic>;
 
     final List<User> userList =

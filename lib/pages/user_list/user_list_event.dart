@@ -1,10 +1,6 @@
 abstract class UserEvent {}
 
-class FetchUsers extends UserEvent {
-  final int page;
-
-  FetchUsers({required this.page});
-}
+class FetchUsers extends UserEvent {}
 
 class GoToUserTasks extends UserEvent {
   final int userId;
