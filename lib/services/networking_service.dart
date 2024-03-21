@@ -19,8 +19,6 @@ class NetworkingService {
   Future<dynamic> get(String url) async {
     final response = await http.get(Uri.parse(_apiUrl + url), headers: headers);
 
-    print("MAX__ response - ${response.statusCode}");
-
     return _response(response);
   }
 
